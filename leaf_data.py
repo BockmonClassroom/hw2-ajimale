@@ -14,6 +14,14 @@ df = pd.read_csv('data/Jimale-Leaf-size.csv')
 # This part for print test.
 #print(df)
 
+#Add "All Plants" category
+df_all = df.copy()
+df_all["Plant Name"] = "All Plants" #Assgin a new category for all data combined
+df_all = df_all.reset_index(drop=True) # Reset index to avoid conflicts
+
+#Comine orignal data with modified dataset
+df_combined = pd.concat([df, df_all], ignore_index=True)
+
 # Set the plot style
 sns.set(style="whitegrid")
 
@@ -22,14 +30,14 @@ plt.figure(figsize=(12, 6))
 
 # Leaf-length histogram
 plt.subplot(1, 2, 1)
-sns.histplot(data=df, x='Leaf-length (mm)', hue='Plant Name', multiple="stack", kde=True)
+sns.histplot(data=df_combined, x='Leaf-length (mm)', hue='Plant Name', multiple="stack", kde=True)
 plt.title('Leaf-length Distribution')
 plt.xlabel('Leaf-length (mm)')
 plt.ylabel('Frequency')
 
 # Leaf-Width histogram
 plt.subplot(1, 2, 2)
-sns.histplot(data=df, x='Leaf-width (mm)', hue='Plant Name', multiple="stack", kde=True)
+sns.histplot(data=df_combined, x='Leaf-width (mm)', hue='Plant Name', multiple="stack", kde=True)
 plt.title('Leaf-width Distribution')
 plt.xlabel('Leaf-width (mm)')
 plt.ylabel('Frequency')
@@ -43,14 +51,14 @@ plt.figure(figsize=(12, 6))
 
 # Boxplot for Leaf-length
 plt.subplot(1, 2, 1)
-sns.boxplot(data=df, x='Plant Name', y='Leaf-length (mm)')
+sns.boxplot(data=df_combined, x='Plant Name', y='Leaf-length (mm)')
 plt.title('Leaf-length Boxplot')
 plt.xlabel('Plant Species')
 plt.ylabel('Leaf-length (mm)')
 
 # Boxplot for Leaf-Width
 plt.subplot(1, 2, 2)
-sns.boxplot(data=df, x='Plant Name', y='Leaf-width (mm)')
+sns.boxplot(data=df_combined, x='Plant Name', y='Leaf-width (mm)')
 plt.title('Leaf-width Boxplot')
 plt.xlabel('Plant Species')
 plt.ylabel('Leaf-width (mm)')
@@ -70,7 +78,7 @@ plt.show()
 
 # 4. Statistical Analysis
 # Calculate mean, median, standard deviation, and variance for each species
-summary_stats = df.groupby('Plant Name').agg(
+summary_stats = df_combined.groupby('Plant Name').agg(
     Mean_Length=('Leaf-length (mm)','mean'),
     Median_Length=('Leaf-length (mm)', 'median'),
     Sta_Dev_Length=('Leaf-length (mm)', 'std'),
